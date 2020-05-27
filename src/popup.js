@@ -5,9 +5,15 @@ import {
   getBattleLog,
   getMemberName,
   getMemberProfile,
+  getSprintTimeline,
   getProgress,
   removeApiToken
 } from './api/api'
+
+//sprint timeline elements
+const sprintStart = document.getElementById('sprintStart')
+const sprintEnd = document.getElementById('sprintEnd')
+const sprintRemaining = document.getElementById('sprintRemaining')
 
 // Member profile button and info
 const profileContainer = document.getElementById('profileContainer')
@@ -153,6 +159,12 @@ document.addEventListener(
         memberIcon.src = memberProfile.icon
         memberName.innerHTML = memberProfile.name
         memberTeam.innerHTML = memberProfile.workspace
+
+        /* Get sprint timeline details */
+        const sprintTimeline = getSprintTimeline()
+        sprintStart.innerHTML = sprintTimeline.start
+        sprintEnd.innerHTML = sprintTimeline.end
+        sprintRemaining.innerHTML = sprintTimeline.remaining
 
         /* Set progress bar values */
         const { completed, total } = getProgress()

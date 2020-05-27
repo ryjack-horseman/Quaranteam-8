@@ -105,6 +105,13 @@ var STORIES = null
 var SETUP = null
 
 /**
+ * All iterations in the workspace
+ * 
+ * @type {?Array<Iteration>}
+ */
+var CURRENT_ITERATION = null
+
+/**
  * Fetch all projects
  *
  * @async
@@ -175,6 +182,20 @@ const fetchMembersAsync = async () => {
   const res = await fetch(`https://api.clubhouse.io/api/v3/members?token=${API_TOKEN}`, {
     headers: { 'Content-Type': 'application/json' }
   })
+  return res.json()
+}
+
+/**
+ * Fetch a list of all iterations in the workspace
+ * 
+ * @async
+ * @returns {Promise<Array>}
+ */
+const fetchSprintTimelineAsync = async () => {
+  const res = await fetch(`https://api.clubhouse.io/api/v3/iterations?token=${API_TOKEN}`, {
+    headers: { 'Content-Type': 'application/json'}
+  })
+  console.log(res)
   return res.json()
 }
 
@@ -315,6 +336,36 @@ const getMemberProfile = () => {
 }
 
 /**
+ * Get the sprint timeline details - start & end dates and remaining days
+ * 
+ * @returns {SprintDetails} The sprint information
+ */
+const getSprintTimeline = () => {
+  console.log(CURRENT_ITERATION)
+  console.log(CURRENT_ITERATION.filter(iter => iter.status == 'started'))
+  CURRENT_ITERATION = CURRENT_ITERATION.filter(iter => iter.status == 'started')
+
+  if(CURRENT_ITERATION[0]){
+    //calculate days remaining based on start & end dates
+    var s = new Date(CURRENT_ITERATION[0].start_date)
+    var e = new Date(CURRENT_ITERATION[0].end_date)
+    var remaining = ( e.getTime() - s.getTime() ) / (1000 * 3600 * 24)
+
+    console.log(s)
+    console.log(e)
+    console.log(remaining)
+    return {
+      start: CURRENT_ITERATION[0].start_date,
+      end: CURRENT_ITERATION[0].end_date,
+      remaining: remaining
+    }
+  }
+  else{
+
+  }
+}
+
+/**
  * Set the value of API_TOKEN to undefined
  */
 const removeApiToken = () => {
@@ -390,7 +441,17 @@ const setup = () => {
               members.map(member => {
                 MEMBER_MAP[member.id] = member
               })
-            })
+            }),
+          fetchSprintTimelineAsync()
+            .then(iterations => {CURRENT_ITERATION = iterations}
+              
+              /*iterations => {
+              CURRENT_ITERATION = {}
+              iterations.map(iteration => {
+                CURRENT_ITERATION[iteration.id] = iteration
+              }) 
+            }*/
+            )
         ])
           .then(() => {
             resolve('All globals are setup')
@@ -408,6 +469,7 @@ module.exports = {
   getBattleLog,
   getMemberName,
   getMemberProfile,
+  getSprintTimeline,
   getProgress,
   onLogin,
   setup,
