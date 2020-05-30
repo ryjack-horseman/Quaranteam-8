@@ -162,9 +162,15 @@ document.addEventListener(
 
         /* Get sprint timeline details */
         const sprintTimeline = getSprintTimeline()
-        sprintStart.innerHTML = sprintTimeline.start
-        sprintEnd.innerHTML = sprintTimeline.end
-        sprintRemaining.innerHTML = sprintTimeline.remaining
+        //format dates to be more readable
+        console.log(sprintTimeline)
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+
+
+        sprintStart.innerHTML = "Sprint Start: " + months[sprintTimeline.start.getMonth()] + " " + sprintTimeline.start.getDate()
+        sprintEnd.innerHTML = "Sprint End: " + months[sprintTimeline.end.getMonth()] + " " + sprintTimeline.end.getDate()
+        sprintRemaining.innerHTML = "Sprint Remaining: " + sprintTimeline.remaining + " days"
 
         /* Set progress bar values */
         const { completed, total } = getProgress()

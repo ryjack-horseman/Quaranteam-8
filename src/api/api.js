@@ -346,17 +346,22 @@ const getSprintTimeline = () => {
   CURRENT_ITERATION = CURRENT_ITERATION.filter(iter => iter.status == 'started')
 
   if(CURRENT_ITERATION[0]){
-    //calculate days remaining based on start & end dates
+    //calculate days remaining based on current & end dates
     var s = new Date(CURRENT_ITERATION[0].start_date)
+    var c = new Date()
     var e = new Date(CURRENT_ITERATION[0].end_date)
-    var remaining = ( e.getTime() - s.getTime() ) / (1000 * 3600 * 24)
+    var remaining = ( e.getTime() - c.getTime() ) / (1000 * 3600 * 24)
 
+    if(remaining < 0){
+      remaining = 0
+    }
+    
     console.log(s)
     console.log(e)
     console.log(remaining)
     return {
-      start: CURRENT_ITERATION[0].start_date,
-      end: CURRENT_ITERATION[0].end_date,
+      start: s,
+      end: e,
       remaining: remaining
     }
   }
